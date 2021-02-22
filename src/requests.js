@@ -1,15 +1,5 @@
 const LIMIT = 100
 
-function get(propPath, obj) {
-	const arrPath = typeof propPath === 'string' ? propPath.split('.') : propPath
-	let pathPartIndex = 0
-	let result = obj
-	while (result && pathPartIndex < arrPath.length) {
-		result = result[arrPath[pathPartIndex++]]
-	}
-	return result
-}
-
 const getApiUrl = env => {
     if (env === 'labs') {
         return 'https://api.labs.livechatinc.com'
@@ -62,31 +52,6 @@ const createApi = (token, env) => {
                }
            }).then(() => {
                return res
-            //    const monts = res.map(chat => {  
-            //        const dateObject = new Date(chat.thread.timestamp * 1000)
-            //        const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(dateObject)
-            //        const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(dateObject)
-            //        const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(dateObject)
-            //        return {
-            //            day,
-            //            month,
-            //            year
-            //        }
-            //    })
-            //    const parsed = monts.reduce((acc, current) => {
-            //        return {
-            //            ...acc,
-            //            [current.year]: {
-            //                ...acc[current.year],
-            //                [current.month]: {
-            //                     ...get(`${current.year}.${current.month}`, acc),
-            //                     [current.day]: get(`${current.year}.${current.month}.${current.day}`, acc) ? get(`${current.year}.${current.month}.${current.day}`, acc) + 1 : 1,
-            //                }
-            //            }
-            //        }
-            //    }, {})
-            //    console.log('>> parsed', parsed)
-            //    return parsed
            })
        }
        
