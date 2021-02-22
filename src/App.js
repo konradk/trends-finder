@@ -10,19 +10,6 @@ import {
   ProgressBar,
 } from "@livechat/design-system";
 
-// const formatDateToYYYYMMDD = date => {
-//   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date)
-//   const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date)
-//   const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date)
-//   return `${year}${month}${day}`
-// }
-
-// const formatDateToYYYYMM = date => {
-//   const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date)
-//   const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date)
-//   return `${year}${month}`
-// }
-
 const generateLabels = (dateFrom, dateTo, resolution = "month") => {
   let current = dateTo;
   let dateFormat = "YYYY-MM";
@@ -33,15 +20,10 @@ const generateLabels = (dateFrom, dateTo, resolution = "month") => {
   }
   const res = [dayjs(dateTo).format(dateFormat)];
   while (dayjs(current).format(dateFormat) !== formatedFrom) {
-    console.log(">> before", dayjs(current).format(dateFormat));
     current = dayjs(current).subtract(1, substractUnit);
-    console.log(">> after", dayjs(current).format(dateFormat));
     let formatedCurrent = dayjs(current).format(dateFormat);
-    console.log("> formatedCurrent", formatedCurrent);
-    console.log("> from", formatedFrom);
     res.push(formatedCurrent);
   }
-  console.log(">> res");
   return res;
 };
 
@@ -120,21 +102,12 @@ function App() {
         setPendingProgress(data);
       })
       .then((data) => {
-        // const data = _data.filter(chat => {
-        //   return chat.thread.events.find(event => event.text && event.text.indexOf(query) !== -1)
-        // })
         setPendingProgress(null);
         setFetching(false);
 
-        // setQueryData(data)
-        // console.log('>> PARSED')
-        console.log(">> data", data);
         const earliest = data[data.length - 1].thread.timestamp * 1000;
-        console.log(">> earliest", earliest * 1000);
         const labels = generateLabels(earliest, Date.now());
-        console.log(">> labels", labels);
         const _chartData = parseData(labels, data);
-        console.log(">> _chartData", _chartData);
         setChartData({
           query,
           parsed: _chartData.reverse(),

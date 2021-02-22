@@ -7,7 +7,6 @@ import {
   VerticalGridLines,
   HorizontalGridLines,
   VerticalBarSeries,
-  LabelSeries
 } from "react-vis";
 
 const Chart = ({ data }) => {
