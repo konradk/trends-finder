@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@livechat/accounts-sdk": "^2.0.1",
+    "@livechat/design-system": "^0.8.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "dayjs": "^1.8.28",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-vis": "^1.11.7"
   },
   "scripts": {
     "start": "react-scripts start",
