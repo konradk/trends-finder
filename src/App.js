@@ -33,7 +33,7 @@ const parseData = (labels, data) => {
     y: 0,
   }));
   data.forEach((chat) => {
-    const month = dayjs(chat.thread.timestamp * 1000).format("YYYY-MM");
+    const month = dayjs(chat.thread.created_at).format("YYYY-MM");
     const monthData = result.find((_month) => _month.x === month);
     monthData.y = monthData.y + 1;
   });
@@ -105,7 +105,7 @@ function App() {
         setPendingProgress(null);
         setFetching(false);
 
-        const earliest = data[data.length - 1].thread.timestamp * 1000;
+        const earliest = data[data.length - 1].thread.created_at;
         const labels = generateLabels(earliest, Date.now());
         const _chartData = parseData(labels, data);
         setChartData({
