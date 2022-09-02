@@ -79,7 +79,6 @@ function App() {
       .redirect()
       .authorizeData()
       .then((authorizeData) => {
-        console.warn(">> authdata", authorizeData);
         const token = authorizeData.access_token;
         setToken(token);
         sdk.verify(authorizeData);
