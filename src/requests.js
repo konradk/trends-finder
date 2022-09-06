@@ -31,7 +31,7 @@ const createApi = (token, env) => {
     let res = [];
     return fetchData(token, query, 1)
       .then((data) => {
-        let pages = Math.ceil(data.pagination.total / LIMIT);
+        let pages = Math.min(Math.ceil(data.pagination.total / LIMIT), 10);
         res = data.chats;
         callback({
           done: 1,
