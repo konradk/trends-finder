@@ -34,7 +34,6 @@ const createApi = (token, env) => {
   };
 
   const run = (query, exactPhrase, callback) => {
-    console.log(">> exactPhrase", exactPhrase);
     let res = [];
     const parsedQuery = exactPhrase ? `"${query}"` : query;
     return fetchData(token, parsedQuery, null)
