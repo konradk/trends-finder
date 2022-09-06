@@ -33,9 +33,12 @@ const createApi = (token, env) => {
       .then((data) => {
         let pages = Math.min(Math.ceil(data.pagination.total / LIMIT), 10);
         res = data.chats;
+        let overLimit = data.pagination.total / LIMIT > 10;
         callback({
           done: 1,
           pages,
+          overLimit,
+          totalResults: data.pagination.total,
         });
         if (pages > 1) {
           return [...Array(pages - 1).keys()].reduce((acc, current) => {
@@ -43,6 +46,8 @@ const createApi = (token, env) => {
               callback({
                 done: current + 1,
                 pages,
+                overLimit,
+                totalResults: data.pagination.total,
               });
               return fetchData(token, query, current + 2).then((data) => {
                 res = [...res, ...data.chats];

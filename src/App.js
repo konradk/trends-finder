@@ -94,6 +94,7 @@ function App() {
     if (!requestsClient.current) {
       return;
     }
+    setPendingProgress(null);
     setFetching(true);
     const query = searchValue.trim();
     requestsClient.current
@@ -101,7 +102,6 @@ function App() {
         setPendingProgress(data);
       })
       .then((data) => {
-        setPendingProgress(null);
         setFetching(false);
 
         const earliest = data[data.length - 1].thread.created_at;
@@ -137,10 +137,17 @@ function App() {
         {!token && <div>Authotrizing...</div>}
       </div>
       {!pendingProgress && fetching && <Loader />}
-      {pendingProgress && (
+      {pendingProgress && fetching && (
         <ProgressBar
           percent={(pendingProgress.done / pendingProgress.pages) * 100}
         />
+      )}
+      {pendingProgress && pendingProgress.overLimit && (
+        <p>
+          There are too many results for this query. We will only include the
+          most recent 1000 results out of a total of{" "}
+          {pendingProgress.totalResults}.
+        </p>
       )}
       {chartData && (
         <div>
