@@ -9,36 +9,46 @@ const getApiUrl = (env) => {
 
 const createApi = (token, env) => {
   const fetchData = (_token, query, page) => {
-    return fetch(`${getApiUrl(env)}/v3.2/agent/action/list_archives`, {
+    let body = {
+      filters: {
+        query,
+      },
+      limit: LIMIT,
+      pagination: {
+        page,
+      },
+    };
+    if (page) {
+      body = {
+        page_id: page,
+      };
+    }
+    return fetch(`${getApiUrl(env)}/v3.3/agent/action/list_archives`, {
       headers: {
         Authorization: `Bearer ${_token}`,
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({
-        filters: {
-          query,
-        },
-        pagination: {
-          limit: LIMIT,
-          page,
-        },
-      }),
+      body: JSON.stringify(body),
     }).then((res) => res.json());
   };
 
-  const run = (query, callback) => {
+  const run = (query, exactPhrase, callback) => {
+    console.log(">> exactPhrase", exactPhrase);
     let res = [];
-    return fetchData(token, query, 1)
+    const parsedQuery = exactPhrase ? `"${query}"` : query;
+    return fetchData(token, parsedQuery, null)
       .then((data) => {
-        let pages = Math.min(Math.ceil(data.pagination.total / LIMIT), 10);
         res = data.chats;
-        let overLimit = data.pagination.total / LIMIT > 10;
+        const allChats = data.found_chats;
+        let overLimit = allChats / LIMIT > 10;
+        let nextPageId = data.next_page_id;
+        let pages = Math.min(Math.ceil(allChats / LIMIT), 10);
         callback({
           done: 1,
           pages,
           overLimit,
-          totalResults: data.pagination.total,
+          totalResults: allChats,
         });
         if (pages > 1) {
           return [...Array(pages - 1).keys()].reduce((acc, current) => {
@@ -47,10 +57,11 @@ const createApi = (token, env) => {
                 done: current + 1,
                 pages,
                 overLimit,
-                totalResults: data.pagination.total,
+                totalResults: allChats,
               });
-              return fetchData(token, query, current + 2).then((data) => {
+              return fetchData(token, query, nextPageId).then((data) => {
                 res = [...res, ...data.chats];
+                nextPageId = data.next_page_id;
               });
             });
           }, Promise.resolve({}));

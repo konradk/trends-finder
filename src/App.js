@@ -49,6 +49,7 @@ function App() {
   const [chartData, setChartData] = React.useState(null);
   const [pendingProgress, setPendingProgress] = React.useState(null);
   const [token, setToken] = React.useState(null);
+  const [exactPhrase, setExactPhrase] = React.useState(true);
 
   React.useEffect(() => {
     if (!token) {
@@ -98,7 +99,7 @@ function App() {
     setFetching(true);
     const query = searchValue.trim();
     requestsClient.current
-      .run(query, (data) => {
+      .run(query, exactPhrase, (data) => {
         setPendingProgress(data);
       })
       .then((data) => {
@@ -117,7 +118,7 @@ function App() {
         setPendingProgress(null);
         setFetching(false);
       });
-  }, [searchValue]);
+  }, [searchValue, exactPhrase]);
   return (
     <div className="App" style={{ padding: "20px", maxWidth: "900px" }}>
       <h1>Trends Finder</h1>
@@ -129,12 +130,23 @@ function App() {
               value={searchValue}
               onChange={(event) => setSearchValue(event.target.value)}
             />
+
             <div style={{ marginLeft: "10px" }}>
               <Button onClick={handleCheckClick}>Check</Button>
             </div>
           </>
         )}
         {!token && <div>Authotrizing...</div>}
+      </div>
+      <div>
+        <label>
+          Exact phrase
+          <input
+            type="checkbox"
+            checked={exactPhrase}
+            onChange={() => setExactPhrase(!exactPhrase)}
+          />
+        </label>
       </div>
       {!pendingProgress && fetching && <Loader />}
       {pendingProgress && fetching && (
